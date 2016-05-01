@@ -1,18 +1,15 @@
 var piataItems = itemsInStorage();
-
-function addNewItem() { 
+function processNewItem() { 
   var myItem = document.getElementById("mancare");
   if (myItem.value.length != 0) {
    piataItems.push(myItem.value);
    localStorage.setItem('items', JSON.stringify(piataItems));
-   updateList(myItem.value);
+   addListItem(myItem.value);
  }
  else {
    alert("Pune ceva acolo!");
  }
 };
-
-document.getElementById("submit").addEventListener("click", addNewItem);
 
 function itemsInStorage() {
   if (localStorage.getItem('items')) {
@@ -21,25 +18,45 @@ function itemsInStorage() {
   else return [];
 }
 
-function buildList() {
-  var piataList = document.getElementById("piataList");
-  if (piataItems.length != 0) {
-    for (var item in piataItems) {
-     var newElement = document.createElement("li");
-     var newContent = document.createTextNode(piataItems[item]);
-     newElement.appendChild(newContent);
-     piataList.appendChild(newElement);
-   }
- }
+function addListItem(newItem) {
+  if (document.getElementById(newItem)) {
+    alert("Alo, baga alteceva, deja ai pus " + newItem + ".");
+  }
+  else {
+    var deleteButton = document.createElement("input");
+    deleteButton.type = "button";
+    deleteButton.value = "x";
+    deleteButton.class = "deleteButton";
+    var piataList = document.getElementById("piataList");
+    var newElement = document.createElement("p");
+    newElement.id = newItem;
+    var newContent = document.createTextNode(newItem);
+    newElement.appendChild(newContent);
+    newElement.appendChild(deleteButton);
+    piataList.appendChild(newElement);
+    deleteButton.addEventListener("click", function() {
+      removeItem(newItem);
+    });
+  }
 };
 
-function updateList(newItem) {
-  var piataList = document.getElementById("piataList");
-  var newElement = document.createElement("li");
-  var newContent = document.createTextNode(newItem);
-  newElement.appendChild(newContent);
-  piataList.appendChild(newElement);
-
+function removeItem(givenItem) {
+  var index = piataItems.indexOf(givenItem);
+  if (index > -1) {
+    piataItems.splice(index, 1);
+  }
+  localStorage.setItem('items', JSON.stringify(piataItems));
+  document.getElementById(givenItem).remove();
 };
+
+function init(){
+  piataItems = itemsInStorage();
+  for (var item of piataItems) {
+    addListItem(item);
+  }
+  document.getElementById("submit").addEventListener("click", processNewItem);
+};
+
+init();
 
 
