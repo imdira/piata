@@ -1,10 +1,11 @@
 var piataItems = itemsInStorage();
+var piataList = document.getElementById("piataList");
+
 function processNewItem() { 
   var myItem = document.getElementById("mancare");
   if (myItem.value.length != 0) {
    piataItems.push(myItem.value);
    localStorage.setItem('items', JSON.stringify(piataItems));
-   var piataList = document.getElementById("piataList");
    addListItem(myItem.value, piataList);
  }
  else {
@@ -17,6 +18,21 @@ function itemsInStorage() {
     return JSON.parse(localStorage.getItem('items'));
   }
   else return [];
+}
+
+function getItemIndex(givenItem, list) {
+  var index = 0;
+  var listItems = list.getElementsByTagName("li");
+  for (var i = 0; i < listItems.length; i++) { 
+    var item = listItems[i];
+    if (item.textContent === givenItem) {
+      return index + 1;
+    }
+    else {
+      index ++;
+    }
+  }
+  return -1;
 }
 
 function addListItem(newItem, list) {
@@ -35,22 +51,21 @@ function addListItem(newItem, list) {
     newElement.appendChild(deleteButton);
     list.appendChild(newElement);
     deleteButton.addEventListener("click", function() {
-      removeItem(newItem);
+      removeItem(newItem, list);
     });
   }
 };
 
-function removeItem(givenItem) {
+function removeItem(givenItem, list) {
   var index = piataItems.indexOf(givenItem);
   if (index > -1) {
     piataItems.splice(index, 1);
   }
   localStorage.setItem('items', JSON.stringify(piataItems));
-  document.getElementById(givenItem).remove();
+  document.getElementById(getItemIndex(givenItem, list)).remove();
 };
 
 function init(){
-  var piataList = document.getElementById("piataList");
   piataItems = itemsInStorage();
   for (var item of piataItems) {
     addListItem(item, piataList);
