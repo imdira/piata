@@ -4,7 +4,8 @@ function processNewItem() {
   if (myItem.value.length != 0) {
    piataItems.push(myItem.value);
    localStorage.setItem('items', JSON.stringify(piataItems));
-   addListItem(myItem.value);
+   var piataList = document.getElementById("piataList");
+   addListItem(myItem.value, piataList);
  }
  else {
    alert("Pune ceva acolo!");
@@ -18,7 +19,7 @@ function itemsInStorage() {
   else return [];
 }
 
-function addListItem(newItem) {
+function addListItem(newItem, list) {
   if (document.getElementById(newItem)) {
     alert("Alo, baga alteceva, deja ai pus " + newItem + ".");
   }
@@ -27,13 +28,12 @@ function addListItem(newItem) {
     deleteButton.type = "button";
     deleteButton.value = "x";
     deleteButton.class = "deleteButton";
-    var piataList = document.getElementById("piataList");
-    var newElement = document.createElement("p");
-    newElement.id = newItem;
+    var newElement = document.createElement("li");
+    newElement.id = list.getElementsByTagName("li").length + 1;
     var newContent = document.createTextNode(newItem);
     newElement.appendChild(newContent);
     newElement.appendChild(deleteButton);
-    piataList.appendChild(newElement);
+    list.appendChild(newElement);
     deleteButton.addEventListener("click", function() {
       removeItem(newItem);
     });
@@ -50,9 +50,10 @@ function removeItem(givenItem) {
 };
 
 function init(){
+  var piataList = document.getElementById("piataList");
   piataItems = itemsInStorage();
   for (var item of piataItems) {
-    addListItem(item);
+    addListItem(item, piataList);
   }
   document.getElementById("submit").addEventListener("click", processNewItem);
 };
