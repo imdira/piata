@@ -1,13 +1,16 @@
 var piataItems = itemsInStorage();
-console.log("You currently have this in storage:" + JSON.stringify(piataItems));
 var piataList = document.getElementById("piataList");
 
-function processNewItem() { 
-  var myItem = document.getElementById("mancare");
-  if (myItem.value.length != 0) {
-   piataItems.push(myItem.value);
+function processNewItem() {
+  var newEntry = document.getElementById("mancare");
+  if (newEntry.value.length != 0) {
+   var newItem = {
+    name: newEntry.value,
+    id: Math.random().toString()
+   };
+   piataItems.push(newItem);
    localStorage.setItem('items', JSON.stringify(piataItems));
-   addListItem(myItem.value, piataList);
+   addListItem(newItem, piataList);
  }
  else {
    alert("Pune ceva acolo!");
@@ -26,7 +29,8 @@ function addListItem(givenItem, list) {
     alert("Alo, baga alteceva, deja ai pus " + givenItem + ".");
   }
   else {
-    var itemId = Math.random();
+    var itemId = givenItem["id"];
+    var itemName = givenItem["name"];
     var deleteButton = document.createElement("input");
     deleteButton.type = "button";
     deleteButton.value = "x";
@@ -39,11 +43,10 @@ function addListItem(givenItem, list) {
     saveButton.class = "saveButton";
     saveButton.setAttribute('data-parentId', itemId);
 
-
     var listItem = document.createElement("li");
     var inputItem = document.createElement("input");
     inputItem.id = itemId;
-    inputItem.value = givenItem;
+    inputItem.value = itemName;
     listItem.appendChild(inputItem);
     listItem.appendChild(deleteButton);
     listItem.appendChild(saveButton);
@@ -56,15 +59,15 @@ function addListItem(givenItem, list) {
     inputItem.addEventListener("input", function(){});
 
     saveButton.addEventListener("click", function() {
-      var i = piataItems.indexOf(givenItem);
-      piataItems[i] = inputItem.value;
-      console.log("Replaced " + piataItems[i] + " with " + inputItem.value);
+      for (var i = 0; i < piataItems.length; i++) {
+        var item = piataItems[i];
+        if(item["id"] === inputItem["id"]){
+            item["name"] = inputItem.value;
+            localStorage.setItem('items', JSON.stringify(piataItems));
+        }
+      }
     });
   }
-};
-
-function updateItem(saveButton, givenItem, list) {
-
 };
 
 function removeItem(deleteButton, saveButton, givenItem, list) {
