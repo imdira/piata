@@ -61,7 +61,7 @@ function addListItem(givenItem, list) {
     saveButton.addEventListener("click", function() {
       for (var i = 0; i < piataItems.length; i++) {
         var item = piataItems[i];
-        if(item["id"] === inputItem["id"]){
+        if(item["id"] === inputItem["id"]) {
             item["name"] = inputItem.value;
             localStorage.setItem('items', JSON.stringify(piataItems));
         }
